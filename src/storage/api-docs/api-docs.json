@@ -1,0 +1,580 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de Banco",
+        "description": "Crear cuentas bancarias y realizar depósitos, transferencias y retiros",
+        "version": "1.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000"
+        }
+    ],
+    "paths": {
+        "/api/accounts": {
+            "get": {
+                "tags": [
+                    "Cuentas Bancarias"
+                ],
+                "summary": "Lista de cuentas bancarias paginadas",
+                "operationId": "883adeb8345c05d31e32bf33994c80f9",
+                "responses": {
+                    "200": {
+                        "description": "Listado de cuentas bancarias",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/BankAccount"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Cuentas Bancarias"
+                ],
+                "summary": "Crear una nueva cuenta bancaria",
+                "operationId": "953196ba531b7dea14cfd6dec34bc89f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BankAccountCreateRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Cuenta creada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BankAccount"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/accounts/{id}": {
+            "get": {
+                "tags": [
+                    "Cuentas Bancarias"
+                ],
+                "summary": "Obtener información de una cuenta específica",
+                "operationId": "158cf77ce0edf8e99f3501c9708ff038",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la cuenta bancaria",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalles de la cuenta bancaria",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BankAccount"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cuenta no encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/accounts/{id}/balance": {
+            "get": {
+                "tags": [
+                    "Cuentas Bancarias"
+                ],
+                "summary": "Consultar el saldo de una cuenta",
+                "operationId": "2c19bf1399c331424a05d367e972d4c1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la cuenta bancaria",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Saldo actual de la cuenta",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "balance": {
+                                            "type": "number",
+                                            "format": "float",
+                                            "example": 1500.75
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cuenta no encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Inicia sesión y obtiene un token",
+                "operationId": "c5e838284c7f343f0e5e5fd589161c96",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "usuario@correo.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Inicio de sesión exitoso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|eyJ0eXAiOiJKV1QiLC..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciales incorrectas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid credentials"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/deposit": {
+            "post": {
+                "tags": [
+                    "Transacciones"
+                ],
+                "summary": "Realiza un depósito en una cuenta bancaria",
+                "operationId": "7d37929cec1ed6739970c3ba17c8102b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BankDepositRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Depósito realizado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Transaction"
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "Fondos insuficientes"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/withdraw": {
+            "post": {
+                "tags": [
+                    "Transacciones"
+                ],
+                "summary": "Realiza un retiro de una cuenta bancaria",
+                "operationId": "7fe168b88b76bbbe50a78a8722ce107a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BankWithdrawRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Retiro realizado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Transaction"
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "Fondos insuficientes"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/transfer": {
+            "post": {
+                "tags": [
+                    "Transacciones"
+                ],
+                "summary": "Realiza una transferencia entre cuentas bancarias",
+                "operationId": "ff447720cf8647ed4d7a3854209f0b69",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/BankTransferRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Transferencia realizada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Transaction"
+                                }
+                            }
+                        }
+                    },
+                    "402": {
+                        "description": "Fondos insuficientes"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/transactions/{bankAccount}": {
+            "get": {
+                "tags": [
+                    "Transacciones"
+                ],
+                "summary": "Obtiene las transacciones de una cuenta bancaria",
+                "operationId": "b02365e0f3d9328b3b991f41e3a16017",
+                "parameters": [
+                    {
+                        "name": "bankAccount",
+                        "in": "path",
+                        "description": "ID de la cuenta bancaria",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de transacciones",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Transaction"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "BankAccount": {
+                "title": "Cuenta Bancaria",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "holder_name": {
+                        "type": "string",
+                        "example": "Juan Pérez"
+                    },
+                    "document_number": {
+                        "type": "string",
+                        "example": "12345678"
+                    },
+                    "account_type": {
+                        "type": "string",
+                        "example": "credit"
+                    },
+                    "balance": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 1000
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-03T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "Transaction": {
+                "title": "Transacción Bancaria",
+                "description": "Representación de una transacción bancaria",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "DEPOSIT",
+                            "WITHDRAW",
+                            "TRANSFER"
+                        ],
+                        "example": "DEPOSIT"
+                    },
+                    "amount": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 500
+                    },
+                    "source_account_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "target_account_id": {
+                        "type": "integer",
+                        "example": 2,
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-03T12:00:00Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-03T12:00:00Z"
+                    }
+                },
+                "type": "object"
+            },
+            "BankAccountCreateRequest": {
+                "required": [
+                    "holder_name",
+                    "document_number",
+                    "account_type"
+                ],
+                "properties": {
+                    "holder_name": {
+                        "description": "Nombre del propietario",
+                        "type": "string",
+                        "example": "Juan Pérez"
+                    },
+                    "document_number": {
+                        "description": "Número de cuenta",
+                        "type": "string",
+                        "example": "12345678"
+                    },
+                    "account_type": {
+                        "description": "Tipo de cuenta",
+                        "type": "string",
+                        "example": "credit"
+                    }
+                },
+                "type": "object"
+            },
+            "BankDepositRequest": {
+                "required": [
+                    "amount",
+                    "source_account_id"
+                ],
+                "properties": {
+                    "amount": {
+                        "description": "El monto a depositar",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "source_account_id": {
+                        "description": "El ID de la cuenta a la cual se hará el deposito",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "BankTransferRequest": {
+                "required": [
+                    "amount",
+                    "source_account_id",
+                    "target_account_id"
+                ],
+                "properties": {
+                    "amount": {
+                        "description": "El monto a depositar",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "source_account_id": {
+                        "description": "El ID de la cuenta de origen",
+                        "type": "integer"
+                    },
+                    "target_account_id": {
+                        "description": "El ID de la cuenta de destino",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "BankWithdrawRequest": {
+                "required": [
+                    "amount",
+                    "source_account_id"
+                ],
+                "properties": {
+                    "amount": {
+                        "description": "El monto a retirar",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "source_account_id": {
+                        "description": "El ID de la cuenta a la cual se hará el retiro",
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Cuentas Bancarias",
+            "description": "Cuentas Bancarias"
+        },
+        {
+            "name": "Autenticación",
+            "description": "Autenticación"
+        },
+        {
+            "name": "Transacciones",
+            "description": "Transacciones"
+        }
+    ]
+}

@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: servicio_financiero
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  laravel:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    container_name: laravel-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/var/www
+    depends_on:
+      - postgres
+
+  nestjs:
+    build:
+      context: ./nestjs
+      dockerfile: Dockerfile
+    container_name: nestjs-app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    volumes:
+      - ./nestjs:/usr/src/app
+    command: npm run start:dev
+    env_file:
+      - ./nestjs/.env
+
+volumes:
+  postgres_data:
