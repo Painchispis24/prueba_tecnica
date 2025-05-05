@@ -18,7 +18,7 @@ o en laravel
 php artisan db:seed
 
 Se trabajó con un middleware para autenticar las peticiones con JWT. 
-En la ruta:
+El login en estas rutas:
 
 En laravel:
 http://localhost:8000/api/login
