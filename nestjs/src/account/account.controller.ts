@@ -1,25 +1,31 @@
-import { Controller, Get, Post, Body, Param, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, NotFoundException, UseGuards } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth } from "@nestjs/swagger";
 
 @ApiTags('accounts')
+@ApiBearerAuth()
 @Controller('accounts')
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
   @ApiOperation({ summary: 'Crear una nueva cuenta bancaria' })
   create(@Body() createAccountDto: CreateAccountDto) {
     return this.accountService.create(createAccountDto);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   @ApiOperation({ summary: 'Listar todas las cuentas bancarias' })
   findAll() {
     return this.accountService.findAll();
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   @ApiOperation({ summary: 'Consultar una cuenta por su ID' })
   async findOne(@Param('id') id: string) {
@@ -32,6 +38,7 @@ export class AccountController {
     return account;
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id/balance')
   @ApiOperation({ summary: 'Obtener el saldo disponible de una cuenta' })
   @ApiParam({ name: 'id', type: Number })

@@ -1,5 +1,4 @@
 import {
-    IsEnum,
     IsNotEmpty,
     IsNumber,
     IsOptional,
@@ -20,6 +19,7 @@ import {
     @IsInt()
     sourceAccountId?: number;
   
+    @ApiProperty()
     @IsOptional()
     @IsInt()
     targetAccountId?: number;

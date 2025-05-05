@@ -4,6 +4,7 @@ import { Transaction } from './entities/transaction.entity';
 import { Repository } from 'typeorm';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { Account } from '../account/entities/account.entity';
+import { TransactionType } from '../transaction/entities/transaction.entity';
 
 @Injectable()
 export class TransactionService {
@@ -26,7 +27,7 @@ export class TransactionService {
 
     await this.accountRepo.save(source);
 
-    return this.transactionRepo.save({ type:'DEPOSIT', amount, sourceAccount: source });
+    return this.transactionRepo.save({ type:TransactionType.DEPOSIT, amount, sourceAccount: source });
   }
 
   async withdraw(dto: CreateTransactionDto): Promise<Transaction>{
@@ -39,7 +40,7 @@ export class TransactionService {
     source.balance = Number(source.balance) - Number(amount);
     await this.accountRepo.save(source);
 
-    return this.transactionRepo.save({ type:'WITHDRAW', amount, sourceAccount: source });
+    return this.transactionRepo.save({ type: TransactionType.WITHDRAW, amount, sourceAccount: source });
   }
 
   async transfer(dto: CreateTransactionDto): Promise<Transaction>{
@@ -56,7 +57,7 @@ export class TransactionService {
 
     await this.accountRepo.save([source, target]);
 
-    return this.transactionRepo.save({ type:'TRANSFER', amount, sourceAccount: source, targetAccount: target });
+    return this.transactionRepo.save({ type:TransactionType.TRANSFER, amount, sourceAccount: source, targetAccount: target });
   }
 
   async findByAccountId(accountId: number): Promise<Transaction[]> {

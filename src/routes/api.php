@@ -29,7 +29,7 @@ use App\Http\Controllers\TransactionController;
 */
 Route::post('login',[LoginController::class,'login']);
 
-Route::middleware('auth:sanctum')->group(function (){
+Route::middleware('jwt.verify')->group(function (){
     /* Cuentas */
     Route::get('accounts',[BankAccountController::class,'index']);
     Route::get('accounts/{bankAccount}',[BankAccountController::class,'search']);
@@ -41,5 +41,4 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::post('transactions/withdraw',[TransactionController::class,'withdraw']);
     Route::post('transactions/transfer',[TransactionController::class,'transfer']);
     Route::get('transactions/{bankAccount}',[TransactionController::class,'index']);
-
 });

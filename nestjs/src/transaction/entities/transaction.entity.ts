@@ -8,20 +8,24 @@ import {
   } from 'typeorm';
   import { Account } from '../../account/entities/account.entity';
   
-  export type TransactionType = 'DEPOSIT' | 'WITHDRAW' | 'TRANSFER';
+  export enum TransactionType {
+    DEPOSIT = 'DEPOSIT',
+    WITHDRAW = 'WITHDRAW',
+    TRANSFER = 'TRANSFER',
+  }
   
   @Entity()
   export class Transaction {
     @PrimaryGeneratedColumn()
     id: number;
   
-    @Column({ type: 'enum', enum: ['DEPOSIT', 'WITHDRAW', 'TRANSFER'] })
+    @Column({ type: 'enum', enum: TransactionType })
     type: TransactionType;
   
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     amount: number;
   
-    @ManyToOne(() => Account, { nullable: true })
+    @ManyToOne(() => Account)
     @JoinColumn({ name: 'source_account_id' })
     sourceAccount?: Account;
   

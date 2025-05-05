@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Models\User;
 
 
@@ -12,7 +13,7 @@ use App\Models\User;
  *     @OA\Info(
  *         title="API de Banco",
  *         version="1.0",
- *         description="Crear cuentas bancarias y realizar depósitos, transferencias y retiros"
+ *         description="Con autenticación JWT, crear cuentas bancarias y realizar depósitos, transferencias y retiros"
  *     ),
  *     @OA\Server(url="http://127.0.0.1:8000"),
  *     @OA\Components(
@@ -30,21 +31,21 @@ class LoginController extends Controller
     /**
      * @OA\Post(
      *     path="/api/login",
-     *     summary="Inicia sesión y obtiene un token",
+     *     summary="Inicia sesión y obtiene un token (Con JWT)",
      *     tags={"Autenticación"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
      *             required={"email","password"},
-     *             @OA\Property(property="email", type="string", example="usuario@correo.com"),
-     *             @OA\Property(property="password", type="string", example="123456")
+     *             @OA\Property(property="email", type="string", example="usu_1@gmail.com"),
+     *             @OA\Property(property="password", type="string", example="usu123usu")
      *         )
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Inicio de sesión exitoso",
      *         @OA\JsonContent(
-     *             @OA\Property(property="token", type="string", example="1|eyJ0eXAiOiJKV1QiLC...")
+     *             @OA\Property(property="token", type="string")
      *         )
      *     ),
      *     @OA\Response(
@@ -56,16 +57,14 @@ class LoginController extends Controller
      *     )
      * )
      */
-    public function login(){
-        $user = User::where('email',request('email'))->first();
-        if ($user && Hash::check(request('password'), $user->password)) {
-            $token = $user->createToken('login');
-            return [
-                'token' => $token->plainTextToken,
-            ];
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        if ($token = JWTAuth::attempt($credentials)) {
+            return response()->json(['token' => $token]);
         }
-        return response()->json([
-            'message' => "Invalid credentials",
-        ], 401);
+
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('transaction', function (Blueprint $table) {
             $table->id();
-            $table->string('type', 20);
+            $table->enum('type', ['DEPOSIT', 'WITHDRAW', 'TRANSFER']);
             $table->decimal('amount', 10, 2);
             $table->unsignedBigInteger('source_account_id');
             $table->unsignedBigInteger('target_account_id')->nullable();

@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "API de Banco",
-        "description": "Crear cuentas bancarias y realizar depósitos, transferencias y retiros",
+        "description": "Con autenticación JWT, crear cuentas bancarias y realizar depósitos, transferencias y retiros",
         "version": "1.0"
     },
     "servers": [
@@ -173,7 +173,7 @@
                 "tags": [
                     "Autenticación"
                 ],
-                "summary": "Inicia sesión y obtiene un token",
+                "summary": "Inicia sesión y obtiene un token (Con JWT)",
                 "operationId": "c5e838284c7f343f0e5e5fd589161c96",
                 "requestBody": {
                     "required": true,
@@ -187,11 +187,11 @@
                                 "properties": {
                                     "email": {
                                         "type": "string",
-                                        "example": "usuario@correo.com"
+                                        "example": "usu_1@gmail.com"
                                     },
                                     "password": {
                                         "type": "string",
-                                        "example": "123456"
+                                        "example": "usu123usu"
                                     }
                                 },
                                 "type": "object"
@@ -207,8 +207,7 @@
                                 "schema": {
                                     "properties": {
                                         "token": {
-                                            "type": "string",
-                                            "example": "1|eyJ0eXAiOiJKV1QiLC..."
+                                            "type": "string"
                                         }
                                     },
                                     "type": "object"

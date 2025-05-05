@@ -20,8 +20,6 @@ services:
     container_name: laravel-app
     ports:
       - "8000:8000"
-    volumes:
-      - ./src:/var/www
     depends_on:
       - postgres
 
@@ -34,11 +32,8 @@ services:
       - "3000:3000"
     depends_on:
       - postgres
-    volumes:
-      - ./nestjs:/usr/src/app
-    command: npm run start:dev
-    env_file:
-      - ./nestjs/.env
+    environment:
+      - NODE_ENV=production
 
 volumes:
   postgres_data:
