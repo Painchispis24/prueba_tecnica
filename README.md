@@ -9,10 +9,13 @@ docker-compose up --build -d
 Automaticamente se corren los 2 servicios tanto de Nest js y de Laravel.
 Y la base de datos en Postgres
 
-Los seeders se corren para ambos
+Los seeders se pueden corre en ambos. 
 
-Pero las migraciones solo estan en laravel, se recomienda que primero se corran las migraciones, y luego se decida 
-o correr los seeders en nest o en laravel
+Las migraciones solo estan en laravel, pasos: primero se corren las migraciones, y luego
+o correr los seeders en nest con el comando 
+npm run seed
+o en laravel
+php artisan db:seed
 
 Se trabajó con un middleware para autenticar las peticiones con JWT. 
 En la ruta:
@@ -24,16 +27,19 @@ En nestjs:
 http://localhost:3000/auth/login
 
 Y en el body se manda estos datos:
+(datos de seed de laravel) 
 email: usu_1@gmail.com
+(datos de seed de nest) 
+email: usu_3@gmail.com
 password: usu123usu
 
-Para la documentación de endpoints:
+Para la acceder a la documentación de endpoints:
 
 Laravel:
 http://localhost:8000/api/documentation
 NestJs:
 http://localhost:3000/api/
 
-Devuelve el token con JWT y se usa para autenticarse
+Devuelve el token con JWT y se usa para autenticarse para las demás peticiones
 
 
