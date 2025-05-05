@@ -27,6 +27,13 @@ Y en el body se manda estos datos:
 email: usu_1@gmail.com
 password: usu123usu
 
+Para la documentación de endpoints:
+
+Laravel:
+http://localhost:8000/api/documentation
+NestJs:
+http://localhost:3000/api/
+
 Devuelve el token con JWT y se usa para autenticarse
 
 
